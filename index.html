@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FleetWise | Vehicle Rental Management</title>
+<style>
+:root{--navy:#14243a;--navy2:#203650;--blue:#2563eb;--blue2:#1d4ed8;--bg:#f3f6fb;--text:#1e293b;--muted:#64748b;--border:#e2e8f0;--green:#15803d;--amber:#b45309;--red:#b91c1c}
+*{box-sizing:border-box}body{margin:0;font-family:"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text)}button,input{font:inherit}button{cursor:pointer}
+.login-box{max-width:410px;margin:8vh auto;background:white;padding:32px;border-radius:18px;box-shadow:0 15px 45px #14243a16}.login-brand{text-align:center;margin-bottom:25px}.login-brand .logo{font-size:40px}.login-brand h1{margin:8px 0 4px;color:var(--navy)}.login-brand p{margin:0;color:var(--muted)}
+.form-group{margin-bottom:16px}label{display:block;margin-bottom:7px;font-weight:650;font-size:13px}input{width:100%;padding:11px 12px;border:1px solid #cbd5e1;border-radius:9px;background:#fff;color:var(--text)}input:focus{outline:2px solid #bfdbfe;border-color:var(--blue)}
+.btn{border:0;border-radius:9px;padding:11px 15px;background:var(--blue);color:#fff;font-weight:700}.btn:hover{background:var(--blue2)}.btn-full{width:100%}.btn-logout{background:#dc2626}.btn-logout:hover{background:#b91c1c}
+.message{margin-top:12px;font-size:14px}.error{color:var(--red)}.success{color:var(--green)}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 28px;background:white;border-bottom:1px solid var(--border)}.topbar h1{margin:0;font-size:23px;color:var(--navy)}.topbar p{margin:5px 0 0;font-size:13px;color:var(--muted)}.topbar-right{display:flex;align-items:center;gap:12px}.user-badge{display:inline-block;border-radius:30px;background:#e0e7ff;color:#3730a3;padding:7px 11px;font-size:12px;font-weight:750}
+.dashboard-layout{display:flex;align-items:stretch;gap:24px;max-width:1600px;margin:0 auto;padding:24px}.sidebar{flex:0 0 250px;align-self:flex-start;min-height:calc(100vh - 120px);padding:23px 14px;border-radius:16px;background:var(--navy);color:white}.brand{padding:0 9px;margin-bottom:35px}.brand h2{margin:0;font-size:22px}.brand p{margin:6px 0 0;color:#aab9ce;font-size:12px}.nav-label{margin:0 10px 12px;color:#91a3bc;font-size:10px;font-weight:800;letter-spacing:1.6px}.sidebar .tab-btn{display:block;width:100%;margin:5px 0;padding:13px 12px;text-align:left;border:0;border-radius:9px;color:#dce6f4;background:transparent;font-size:13px;font-weight:650}.sidebar .tab-btn:hover{background:var(--navy2);color:white}.sidebar .tab-btn.active{background:var(--blue);color:white}
+.main-content{flex:1;min-width:0}.section{display:none;padding:25px;background:white;border:1px solid var(--border);border-radius:15px;box-shadow:0 4px 18px #14243a08}.section.active{display:block}.section-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:8px}.section h2{margin:0 0 8px;font-size:22px;color:var(--navy)}.section h3{margin:20px 0 10px}.subtitle{margin:0 0 20px;color:var(--muted);font-size:13px}.count-pill{display:inline-block;padding:7px 12px;border-radius:30px;color:#1d4ed8;background:#dbeafe;font-size:12px;font-weight:800}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(245px,1fr));gap:16px;margin-top:16px}.card{padding:18px;border:1px solid var(--border);border-radius:13px;background:white;box-shadow:0 3px 12px #14243a07;transition:transform .18s,box-shadow .18s}.card:hover{transform:translateY(-2px);box-shadow:0 9px 22px #14243a12}.card h3{margin:0 0 12px;font-size:17px;color:var(--navy)}.card p{margin:8px 0;font-size:13px;color:#475569;overflow-wrap:anywhere}.price{margin:12px 0;font-size:25px;font-weight:850;color:var(--blue)}.price small{font-size:12px;color:var(--muted);font-weight:500}.pill{display:inline-block;border-radius:30px;padding:5px 8px;font-size:11px;font-weight:800}.pill-green{color:#166534;background:#dcfce7}.pill-amber{color:#92400e;background:#fef3c7}.pill-red{color:#991b1b;background:#fee2e2}.pill-gray{color:#475569;background:#e2e8f0}.score-track{height:7px;overflow:hidden;margin:8px 0 12px;border-radius:20px;background:#e2e8f0}.score-fill{height:100%;border-radius:20px}.summary-box{padding:14px;margin:15px 0 20px;border:1px solid var(--border);border-radius:11px;background:#f8fafc}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 16px}.table-wrap{width:100%;overflow-x:auto}table{width:100%;border-collapse:collapse;margin-top:12px;font-size:13px;background:white}th,td{padding:11px 12px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}th{background:#f1f5f9;color:#334155;font-size:12px;white-space:nowrap}tr:hover td{background:#f8fafc}.small-btn{padding:7px 10px;border:0;border-radius:7px;background:var(--blue);color:white;font-size:12px;font-weight:700}.empty{padding:24px 10px;color:var(--muted);text-align:center}
+@media(max-width:900px){.dashboard-layout{gap:15px;padding:15px}.sidebar{flex-basis:215px}.section{padding:18px}}
+@media(max-width:680px){.topbar{padding:16px;align-items:flex-start}.topbar h1{font-size:19px}.topbar-right{flex-direction:column;align-items:flex-end;gap:7px}.dashboard-layout{flex-direction:column;padding:12px}.sidebar{width:100%;min-height:auto;flex-basis:auto;padding:15px}.brand{margin-bottom:18px}.sidebar .tab-btn{display:inline-block;width:auto;max-width:100%;margin:3px;padding:10px}.nav-label{margin-bottom:8px}.form-grid{grid-template-columns:1fr}.section{padding:15px}}
+</style>
+</head>
+<body>
+<div id="loginView" class="login-box">
+  <div class="login-brand"><div class="logo">🚘</div><h1>FleetWise</h1><p>Vehicle Rental Management</p></div>
+  <form id="loginForm" onsubmit="handleLogin(event)">
+    <div class="form-group"><label for="loginEmail">Email address</label><input type="email" id="loginEmail" placeholder="admin@system.com" required autocomplete="username"></div>
+    <div class="form-group"><label for="loginPassword">Password</label><input type="password" id="loginPassword" placeholder="Enter password" required autocomplete="current-password"></div>
+    <button type="submit" class="btn btn-full">Sign in</button>
+  </form><div id="loginError" class="message error" role="alert"></div>
+</div>
+
+<div id="dashboardView" style="display:none">
+  <header class="topbar"><div><h1 id="welcomeTitle">Welcome</h1><p>Vehicle rental operations dashboard</p></div><div class="topbar-right"><span id="roleBadge" class="user-badge"></span><button class="btn btn-logout" style="width:auto" onclick="handleLogout()">Logout</button></div></header>
+  <div class="dashboard-layout">
+    <aside class="sidebar">
+      <div class="brand"><h2>🚘 FleetWise</h2><p>Vehicle Management</p></div><p class="nav-label">MAIN MENU</p>
+      <button class="tab-btn active" onclick="switchTab(event,'vehicles')">🚗 Available Vehicles</button>
+      <button class="tab-btn" onclick="switchTab(event,'booking')">📅 New Booking</button>
+      <button class="tab-btn" onclick="switchTab(event,'damage')">🔧 Inspection &amp; Damage Logs</button>
+      <button class="tab-btn" onclick="switchTab(event,'reliability')">⭐ Reliability Scores</button>
+      <button id="customerManagementTab" class="tab-btn" onclick="switchTab(event,'customers')">👥 Customer Management</button>
+    </aside>
+    <main class="main-content">
+      <section id="vehicles" class="section active">
+        <div class="section-heading"><h2>Available Fleet</h2><span id="vehicleCountBadge" class="count-pill">Total Vehicles: 0</span></div>
+        <p class="subtitle">Browse available vehicles, compare daily rental prices, and review vehicle reliability before booking.</p><div id="quantityTableContainer"></div>
+        <div class="form-group" style="max-width:520px;margin-top:18px">
+          <label for="vehicleSearch">Search for a vehicle</label>
+          <input type="search" id="vehicleSearch" placeholder="Type a make or model, e.g. Honda Civic" oninput="filterVehicles()" autocomplete="off">
+          <p class="subtitle" style="margin:7px 0 0">Search by vehicle name, make, model, year, registration number, or vehicle ID.</p>
+        </div>
+        <h3>Available Vehicles</h3><div id="vehicleGrid" class="grid"><p class="empty">Loading vehicles…</p></div>
+        
+<div id="vehicleReliabilityDetails" class="summary-box" hidden>
+  <div class="section-heading">
+    <h3 id="selectedVehicleTitle">Vehicle Reliability Details</h3>
+    <button type="button" class="small-btn"
+      onclick="closeVehicleReliability()">Close</button>
+  </div>
+
+  <p><strong>Vehicle ID:</strong> <span id="detailVehicleId">—</span></p>
+  <p><strong>Reliability Score:</strong>
+    <span id="detailReliabilityScore">—</span>/100
+  </p>
+
+  <h4>Penalty Breakdown</h4>
+  <p>Damage Penalty: <strong id="detailDamagePenalty">Loading…</strong></p>
+  <p>Age Penalty: <strong id="detailAgePenalty">Loading…</strong></p>
+  <p>Maintenance Penalty:
+    <strong id="detailMaintenancePenalty">Loading…</strong>
+  </p>
+  <p><strong>Last Calculated:</strong>
+    <span id="detailLastCalculated">—</span>
+  </p>
+
+  <p id="vehicleReliabilityMessage" role="status"></p>
+</div>
+
+      </section>
+      <section id="booking" class="section">
+        <h2>Create Reservation</h2><p class="subtitle">Enter customer, vehicle, and rental dates to create a booking.</p>
+        <form id="bookingForm" onsubmit="createBooking(event)">
+          <div class="form-grid">
+            <div class="form-group"><label for="customerId">Customer ID</label><input type="number" id="customerId" min="1" required placeholder="Enter customer ID"></div>
+            <div class="form-group"><label for="vehicleId">Vehicle ID</label><input type="number" id="vehicleId" min="1" required placeholder="Enter vehicle ID"></div>
+            <div class="form-group"><label for="startDate">Start date</label><input type="date" id="startDate" required></div>
+            <div class="form-group"><label for="endDate">End date</label><input type="date" id="endDate" required></div>
+            <div class="form-group"><label for="totalCost">Total cost (₹)</label><input type="number" id="totalCost" min="0" step="0.01" required placeholder="2500.00"></div>
+          </div><button type="submit" class="btn">Confirm Reservation</button>
+        </form>
+        
+
+
+<div id="paymentPanel" hidden>
+  <h3>Complete Your Payment</h3>
+
+  <p>Booking ID: <strong id="paymentBookingId">—</strong></p>
+  <p>Total amount: ₹<strong id="paymentAmount">0.00</strong></p>
+
+  <h4>Select Payment Method</h4>
+
+  <div class="payment-options">
+    <button type="button" data-payment-method="upi">UPI</button>
+    <button type="button" data-payment-method="credit_card">Credit Card</button>
+    <button type="button" data-payment-method="debit_card">Debit Card</button>
+    <button type="button" data-payment-method="cash">Cash at Pickup</button>
+  </div>
+
+  <!-- Credit / Debit Card Form -->
+  <form id="cardPaymentForm" hidden>
+    <h4 id="cardFormTitle">Card Details</h4>
+
+    <label for="cardholderName">Cardholder Name</label>
+    <input
+      id="cardholderName"
+      type="text"
+      placeholder="Name on card"
+      autocomplete="cc-name"
+      required
+    />
+
+    <label for="cardNumber">Card Number</label>
+    <input
+      id="cardNumber"
+      type="text"
+      placeholder="1234 5678 9012 3456"
+      inputmode="numeric"
+      autocomplete="cc-number"
+      maxlength="19"
+      required
+    />
+
+    <label for="cardExpiry">Expiry Date (MM/YY)</label>
+    <input
+      id="cardExpiry"
+      type="text"
+      placeholder="MM/YY"
+      autocomplete="cc-exp"
+      maxlength="5"
+      required
+    />
+
+    <label for="cardCvv">CVV</label>
+    <input
+      id="cardCvv"
+      type="password"
+      placeholder="CVV"
+      inputmode="numeric"
+      autocomplete="cc-csc"
+      maxlength="4"
+      required
+    />
+
+    <button type="submit" id="cardPayButton">Pay Now</button>
+    <button type="button" id="cancelCardPayment">Cancel</button>
+  </form>
+
+  <!-- UPI Form -->
+  <form id="upiPaymentForm" hidden>
+    <h4>Pay Using UPI</h4>
+
+    <label for="upiApp">Choose UPI App</label>
+    <select id="upiApp" required>
+      <option value="">-- Select UPI App --</option>
+      <option value="Google Pay">Google Pay</option>
+      <option value="PhonePe">PhonePe</option>
+      <option value="Paytm">Paytm</option>
+      <option value="BHIM">BHIM</option>
+      <option value="Other UPI App">Other UPI App</option>
+    </select>
+
+    <label for="upiId">UPI ID (Optional)</label>
+    <input
+      id="upiId"
+      type="text"
+      placeholder="example@upi"
+      autocomplete="off"
+    />
+
+    <button type="submit" id="upiPayButton">Continue to Pay</button>
+    <button type="button" id="cancelUpiPayment">Cancel</button>
+  </form>
+
+  <p id="paymentMessage" role="status" aria-live="polite"></p>
+
+  <button type="button" id="closePaymentPanel">Close Payment</button>
+</div>
+
+
+<div id="bookingMessage" class="message" role="status"></div>
+      </section>
+      <section id="damage" class="section"><h2>Inspection &amp; Damage History</h2><p class="subtitle">Reported damage and estimated repair costs.</p><div id="damageTableContainer"><p class="empty">Loading inspection records…</p></div></section>
+      <section id="reliability" class="section">
+        <h2>Vehicle Reliability</h2><p class="subtitle">Recalculate and view a vehicle's reliability score.</p>
+        <form onsubmit="checkReliability(event)" class="form-grid"><div class="form-group"><label for="checkVehicleId">Vehicle ID</label><input type="number" id="checkVehicleId" min="1" placeholder="e.g. 1" required></div><div class="form-group" style="display:flex;align-items:end"><button class="btn" type="submit">Check Score</button></div></form><div id="reliabilityResult"></div>
+      </section>
+      <section id="customers" class="section">
+        <h2>Customer Management</h2><p class="subtitle">Review customers and inspect their booking, rental, and payment history.</p>
+        <div class="table-wrap"><table><thead><tr><th>Customer ID</th><th>Full name</th><th>Email</th><th>Phone</th><th>Driving licence</th><th>Action</th></tr></thead><tbody id="customerTableBody"><tr><td colspan="6">Customers load when you sign in as Admin.</td></tr></tbody></table></div><div id="customerDetails" style="margin-top:25px"></div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<script>
+const API_BASE='http://localhost:5000/api';
+// Embedded from CarRentalData_200_rows.csv for the Available Vehicles UI.
+const DATASET_VEHICLES = [{"vehicle_id": "CSV-000001", "make": "Tesla", "model": "Model X", "year": 2019, "rental_rate_per_day": 11475.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "ELECTRIC", "vehicle_type": "suv", "location": "Seattle", "original_daily_rate_usd": 135.0}, {"vehicle_id": "CSV-000002", "make": "Tesla", "model": "Model X", "year": 2018, "rental_rate_per_day": 16150.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "ELECTRIC", "vehicle_type": "suv", "location": "Tijeras", "original_daily_rate_usd": 190.0}, {"vehicle_id": "CSV-000003", "make": "Toyota", "model": "Prius", "year": 2012, "rental_rate_per_day": 2975.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "HYBRID", "vehicle_type": "car", "location": "Albuquerque", "original_daily_rate_usd": 35.0}, {"vehicle_id": "CSV-000004", "make": "Ford", "model": "Mustang", "year": 2018, "rental_rate_per_day": 6375.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Albuquerque", "original_daily_rate_usd": 75.0}, {"vehicle_id": "CSV-000005", "make": "Chrysler", "model": "Sebring", "year": 2010, "rental_rate_per_day": 3995.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Albuquerque", "original_daily_rate_usd": 47.0}, {"vehicle_id": "CSV-000006", "make": "Mercedes-Benz", "model": "GL-Class", "year": 2012, "rental_rate_per_day": 4930.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Albuquerque", "original_daily_rate_usd": 58.0}, {"vehicle_id": "CSV-000007", "make": "GMC", "model": "Yukon XL", "year": 2005, "rental_rate_per_day": 3570.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Albuquerque", "original_daily_rate_usd": 42.0}, {"vehicle_id": "CSV-000008", "make": "Ford", "model": "Expedition", "year": 2018, "rental_rate_per_day": 9945.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Albuquerque", "original_daily_rate_usd": 117.0}, {"vehicle_id": "CSV-000009", "make": "Ford", "model": "Focus RS", "year": 2016, "rental_rate_per_day": 8670.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Albuquerque", "original_daily_rate_usd": 102.0}, {"vehicle_id": "CSV-000010", "make": "Ford", "model": "EcoSport", "year": 2018, "rental_rate_per_day": 4165.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Albuquerque", "original_daily_rate_usd": 49.0}, {"vehicle_id": "CSV-000011", "make": "Ford", "model": "F-150", "year": 2012, "rental_rate_per_day": 6375.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "truck", "location": "Albuquerque", "original_daily_rate_usd": 75.0}, {"vehicle_id": "CSV-000012", "make": "Toyota", "model": "Prius", "year": 2012, "rental_rate_per_day": 2975.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "HYBRID", "vehicle_type": "car", "location": "Albuquerque", "original_daily_rate_usd": 35.0}, {"vehicle_id": "CSV-000013", "make": "Volkswagen", "model": "Tiguan", "year": 2018, "rental_rate_per_day": 7480.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Albuquerque", "original_daily_rate_usd": 88.0}, {"vehicle_id": "CSV-000014", "make": "Toyota", "model": "Avalon Hybrid", "year": 2013, "rental_rate_per_day": 3570.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "HYBRID", "vehicle_type": "car", "location": "Albuquerque", "original_daily_rate_usd": 42.0}, {"vehicle_id": "CSV-000015", "make": "Saab", "model": "3-Sep", "year": 2011, "rental_rate_per_day": 3570.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Albuquerque", "original_daily_rate_usd": 42.0}, {"vehicle_id": "CSV-000016", "make": "Ram", "model": "CV Tradesman", "year": 2014, "rental_rate_per_day": 5525.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "minivan", "location": "Albuquerque", "original_daily_rate_usd": 65.0}, {"vehicle_id": "CSV-000017", "make": "Jeep", "model": "Cherokee", "year": 2018, "rental_rate_per_day": 3570.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Albuquerque", "original_daily_rate_usd": 42.0}, {"vehicle_id": "CSV-000018", "make": "Porsche", "model": "Cayman", "year": 2007, "rental_rate_per_day": 9860.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Albuquerque", "original_daily_rate_usd": 116.0}, {"vehicle_id": "CSV-000019", "make": "Jeep", "model": "Wrangler JK", "year": 2018, "rental_rate_per_day": 10115.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Albuquerque", "original_daily_rate_usd": 119.0}, {"vehicle_id": "CSV-000020", "make": "Ford", "model": "Mustang", "year": 2019, "rental_rate_per_day": 6800.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Santa Fe", "original_daily_rate_usd": 80.0}, {"vehicle_id": "CSV-000021", "make": "Ford", "model": "Explorer", "year": 2012, "rental_rate_per_day": 8245.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Albuquerque", "original_daily_rate_usd": 97.0}, {"vehicle_id": "CSV-000022", "make": "Nissan", "model": "Rogue", "year": 2016, "rental_rate_per_day": 3485.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Albuquerque", "original_daily_rate_usd": 41.0}, {"vehicle_id": "CSV-000023", "make": "Tesla", "model": "Model S", "year": 2015, "rental_rate_per_day": 14535.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "ELECTRIC", "vehicle_type": "car", "location": "Albuquerque", "original_daily_rate_usd": 171.0}, {"vehicle_id": "CSV-000024", "make": "Dodge", "model": "Charger", "year": 2014, "rental_rate_per_day": 4250.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Santa Fe", "original_daily_rate_usd": 50.0}, {"vehicle_id": "CSV-000025", "make": "Volkswagen", "model": "Jetta", "year": 2019, "rental_rate_per_day": 4165.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Santa Fe", "original_daily_rate_usd": 49.0}, {"vehicle_id": "CSV-000026", "make": "Hyundai", "model": "Sonata", "year": 2016, "rental_rate_per_day": 3315.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Santa Fe", "original_daily_rate_usd": 39.0}, {"vehicle_id": "CSV-000027", "make": "Chevrolet", "model": "Impala", "year": 2010, "rental_rate_per_day": 2380.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Rio Rancho", "original_daily_rate_usd": 28.0}, {"vehicle_id": "CSV-000028", "make": "Hyundai", "model": "Accent", "year": 2015, "rental_rate_per_day": 2720.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Albuquerque", "original_daily_rate_usd": 32.0}, {"vehicle_id": "CSV-000029", "make": "Ford", "model": "Focus", "year": 2010, "rental_rate_per_day": 2380.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Albuquerque", "original_daily_rate_usd": 28.0}, {"vehicle_id": "CSV-000030", "make": "GMC", "model": "Yukon XL", "year": 2018, "rental_rate_per_day": 10625.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Grovetown", "original_daily_rate_usd": 125.0}, {"vehicle_id": "CSV-000031", "make": "Toyota", "model": "Sequoia", "year": 2016, "rental_rate_per_day": 9520.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Evans", "original_daily_rate_usd": 112.0}, {"vehicle_id": "CSV-000032", "make": "Mercedes-Benz", "model": "GLC-Class", "year": 2016, "rental_rate_per_day": 7395.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Augusta", "original_daily_rate_usd": 87.0}, {"vehicle_id": "CSV-000033", "make": "Ford", "model": "Fiesta", "year": 2019, "rental_rate_per_day": 3995.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "", "vehicle_type": "car", "location": "Augusta", "original_daily_rate_usd": 47.0}, {"vehicle_id": "CSV-000034", "make": "Dodge", "model": "Journey", "year": 2019, "rental_rate_per_day": 3570.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Augusta", "original_daily_rate_usd": 42.0}, {"vehicle_id": "CSV-000035", "make": "Lexus", "model": "ES 300h", "year": 2015, "rental_rate_per_day": 11050.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "HYBRID", "vehicle_type": "car", "location": "Evans", "original_daily_rate_usd": 130.0}, {"vehicle_id": "CSV-000036", "make": "Cadillac", "model": "ATS", "year": 2015, "rental_rate_per_day": 9775.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Augusta", "original_daily_rate_usd": 115.0}, {"vehicle_id": "CSV-000037", "make": "Lexus", "model": "IS 350", "year": 2015, "rental_rate_per_day": 7225.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Beech Island", "original_daily_rate_usd": 85.0}, {"vehicle_id": "CSV-000038", "make": "smart", "model": "fortwo", "year": 2010, "rental_rate_per_day": 2040.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "East Point", "original_daily_rate_usd": 24.0}, {"vehicle_id": "CSV-000039", "make": "Land Rover", "model": "Range Rover", "year": 2016, "rental_rate_per_day": 12240.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Atlanta", "original_daily_rate_usd": 144.0}, {"vehicle_id": "CSV-000040", "make": "Tesla", "model": "Model 3", "year": 2020, "rental_rate_per_day": 12410.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "ELECTRIC", "vehicle_type": "car", "location": "Doraville", "original_daily_rate_usd": 146.0}, {"vehicle_id": "CSV-000041", "make": "Porsche", "model": "718 Boxster", "year": 2017, "rental_rate_per_day": 10625.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "East Point", "original_daily_rate_usd": 125.0}, {"vehicle_id": "CSV-000042", "make": "Mercedes-Benz", "model": "S-Class", "year": 2015, "rental_rate_per_day": 14875.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Grayson", "original_daily_rate_usd": 175.0}, {"vehicle_id": "CSV-000043", "make": "BMW", "model": "7 Series", "year": 2018, "rental_rate_per_day": 17000.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 200.0}, {"vehicle_id": "CSV-000044", "make": "Mercedes-benz", "model": "C-Class", "year": 2019, "rental_rate_per_day": 8330.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 98.0}, {"vehicle_id": "CSV-000045", "make": "BMW", "model": "4 Series", "year": 2018, "rental_rate_per_day": 8160.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Tampa", "original_daily_rate_usd": 96.0}, {"vehicle_id": "CSV-000046", "make": "Porsche", "model": "Panamera", "year": 2011, "rental_rate_per_day": 12750.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 150.0}, {"vehicle_id": "CSV-000047", "make": "Mercedes-Benz", "model": "GLA-Class", "year": 2017, "rental_rate_per_day": 8415.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Doraville", "original_daily_rate_usd": 99.0}, {"vehicle_id": "CSV-000048", "make": "Volkswagen", "model": "Jetta", "year": 2016, "rental_rate_per_day": 3570.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "East Point", "original_daily_rate_usd": 42.0}, {"vehicle_id": "CSV-000049", "make": "Acura", "model": "MDX", "year": 2014, "rental_rate_per_day": 4080.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Fairburn", "original_daily_rate_usd": 48.0}, {"vehicle_id": "CSV-000050", "make": "Tesla", "model": "Model 3", "year": 2018, "rental_rate_per_day": 11390.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "ELECTRIC", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 134.0}, {"vehicle_id": "CSV-000051", "make": "Chevrolet", "model": "Corvette Stingray", "year": 2014, "rental_rate_per_day": 13175.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 155.0}, {"vehicle_id": "CSV-000052", "make": "Audi", "model": "A8", "year": 2015, "rental_rate_per_day": 11050.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 130.0}, {"vehicle_id": "CSV-000053", "make": "Nissan", "model": "Altima", "year": 2018, "rental_rate_per_day": 4930.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "College Park", "original_daily_rate_usd": 58.0}, {"vehicle_id": "CSV-000054", "make": "Audi", "model": "A7", "year": 2017, "rental_rate_per_day": 9520.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 112.0}, {"vehicle_id": "CSV-000055", "make": "Audi", "model": "RS 7", "year": 2014, "rental_rate_per_day": 17765.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 209.0}, {"vehicle_id": "CSV-000056", "make": "Dodge", "model": "Grand Caravan", "year": 2015, "rental_rate_per_day": 4165.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "minivan", "location": "Lawrenceville", "original_daily_rate_usd": 49.0}, {"vehicle_id": "CSV-000057", "make": "Jaguar", "model": "XJ", "year": 2016, "rental_rate_per_day": 10965.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 129.0}, {"vehicle_id": "CSV-000058", "make": "Tesla", "model": "Model S", "year": 2018, "rental_rate_per_day": 13515.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "ELECTRIC", "vehicle_type": "car", "location": "Duluth", "original_daily_rate_usd": 159.0}, {"vehicle_id": "CSV-000059", "make": "Mercedes-Benz", "model": "C-Class", "year": 2015, "rental_rate_per_day": 7140.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Douglasville", "original_daily_rate_usd": 84.0}, {"vehicle_id": "CSV-000060", "make": "Chevrolet", "model": "Corvette", "year": 2017, "rental_rate_per_day": 14875.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 175.0}, {"vehicle_id": "CSV-000061", "make": "Mercedes-Benz", "model": "S-Class", "year": 2016, "rental_rate_per_day": 16065.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 189.0}, {"vehicle_id": "CSV-000062", "make": "Chevrolet", "model": "Camaro", "year": 2017, "rental_rate_per_day": 11050.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 130.0}, {"vehicle_id": "CSV-000063", "make": "Land Rover", "model": "Range Rover Sport", "year": 2014, "rental_rate_per_day": 12750.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Atlanta", "original_daily_rate_usd": 150.0}, {"vehicle_id": "CSV-000064", "make": "Maserati", "model": "Quattroporte", "year": 2016, "rental_rate_per_day": 10625.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 125.0}, {"vehicle_id": "CSV-000065", "make": "INFINITI", "model": "Q50", "year": 2018, "rental_rate_per_day": 6460.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Douglasville", "original_daily_rate_usd": 76.0}, {"vehicle_id": "CSV-000066", "make": "Chevrolet", "model": "Corvette", "year": 2015, "rental_rate_per_day": 12495.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 147.0}, {"vehicle_id": "CSV-000067", "make": "Porsche", "model": "Boxster", "year": 2014, "rental_rate_per_day": 13600.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Snellville", "original_daily_rate_usd": 160.0}, {"vehicle_id": "CSV-000068", "make": "Tesla", "model": "Model 3", "year": 2019, "rental_rate_per_day": 14875.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "ELECTRIC", "vehicle_type": "car", "location": "Decatur", "original_daily_rate_usd": 175.0}, {"vehicle_id": "CSV-000069", "make": "Porsche", "model": "Cayenne", "year": 2014, "rental_rate_per_day": 7565.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "DIESEL", "vehicle_type": "suv", "location": "East Point", "original_daily_rate_usd": 89.0}, {"vehicle_id": "CSV-000070", "make": "Ford", "model": "Mustang", "year": 2019, "rental_rate_per_day": 9860.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 116.0}, {"vehicle_id": "CSV-000071", "make": "Land Rover", "model": "Range Rover Sport", "year": 2016, "rental_rate_per_day": 11560.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Atlanta", "original_daily_rate_usd": 136.0}, {"vehicle_id": "CSV-000072", "make": "Infiniti", "model": "EX35", "year": 2008, "rental_rate_per_day": 4760.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Douglasville", "original_daily_rate_usd": 56.0}, {"vehicle_id": "CSV-000073", "make": "INFINITI", "model": "Q50", "year": 2018, "rental_rate_per_day": 5440.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "East Point", "original_daily_rate_usd": 64.0}, {"vehicle_id": "CSV-000074", "make": "Mercedes-Benz", "model": "E-Class", "year": 2016, "rental_rate_per_day": 7650.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "East Point", "original_daily_rate_usd": 90.0}, {"vehicle_id": "CSV-000075", "make": "Mazda", "model": "CX-5", "year": 2018, "rental_rate_per_day": 4675.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "East Point", "original_daily_rate_usd": 55.0}, {"vehicle_id": "CSV-000076", "make": "smart", "model": "fortwo", "year": 2015, "rental_rate_per_day": 2465.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "East Point", "original_daily_rate_usd": 29.0}, {"vehicle_id": "CSV-000077", "make": "BMW", "model": "Z4", "year": 2008, "rental_rate_per_day": 6630.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Decatur", "original_daily_rate_usd": 78.0}, {"vehicle_id": "CSV-000078", "make": "Chevrolet", "model": "Camaro", "year": 2018, "rental_rate_per_day": 8670.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 102.0}, {"vehicle_id": "CSV-000079", "make": "Land Rover", "model": "Range Rover Evoque", "year": 2015, "rental_rate_per_day": 7225.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Atlanta", "original_daily_rate_usd": 85.0}, {"vehicle_id": "CSV-000080", "make": "BMW", "model": "X4", "year": 2018, "rental_rate_per_day": 8330.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Atlanta", "original_daily_rate_usd": 98.0}, {"vehicle_id": "CSV-000081", "make": "Infiniti", "model": "QX60", "year": 2015, "rental_rate_per_day": 7650.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "East Point", "original_daily_rate_usd": 90.0}, {"vehicle_id": "CSV-000082", "make": "Tesla", "model": "Model 3", "year": 2020, "rental_rate_per_day": 12750.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "ELECTRIC", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 150.0}, {"vehicle_id": "CSV-000083", "make": "BMW", "model": "6 Series Gran Coupe", "year": 2013, "rental_rate_per_day": 12665.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 149.0}, {"vehicle_id": "CSV-000084", "make": "BMW", "model": "M4", "year": 2015, "rental_rate_per_day": 16575.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 195.0}, {"vehicle_id": "CSV-000085", "make": "Mercedes-Benz", "model": "C-Class", "year": 2016, "rental_rate_per_day": 11050.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Alpharetta", "original_daily_rate_usd": 130.0}, {"vehicle_id": "CSV-000086", "make": "Tesla", "model": "Model X", "year": 2018, "rental_rate_per_day": 17765.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "ELECTRIC", "vehicle_type": "suv", "location": "East Point", "original_daily_rate_usd": 209.0}, {"vehicle_id": "CSV-000087", "make": "Maserati", "model": "Ghibli", "year": 2015, "rental_rate_per_day": 10455.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Peachtree Corners", "original_daily_rate_usd": 123.0}, {"vehicle_id": "CSV-000088", "make": "Mercedes-Benz", "model": "GLA-Class", "year": 2015, "rental_rate_per_day": 5950.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Atlanta", "original_daily_rate_usd": 70.0}, {"vehicle_id": "CSV-000089", "make": "Maserati", "model": "Ghibli", "year": 2015, "rental_rate_per_day": 21250.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 250.0}, {"vehicle_id": "CSV-000090", "make": "Chevrolet", "model": "Camaro", "year": 2019, "rental_rate_per_day": 10200.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 120.0}, {"vehicle_id": "CSV-000091", "make": "Mercedes-Benz", "model": "C-Class", "year": 2016, "rental_rate_per_day": 5525.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 65.0}, {"vehicle_id": "CSV-000092", "make": "BMW", "model": "M4", "year": 2016, "rental_rate_per_day": 15300.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Smyrna", "original_daily_rate_usd": 180.0}, {"vehicle_id": "CSV-000093", "make": "Tesla", "model": "Model 3", "year": 2018, "rental_rate_per_day": 13260.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "ELECTRIC", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 156.0}, {"vehicle_id": "CSV-000094", "make": "BMW", "model": "5 Series", "year": 2011, "rental_rate_per_day": 5440.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 64.0}, {"vehicle_id": "CSV-000095", "make": "Tesla", "model": "Model X", "year": 2016, "rental_rate_per_day": 20825.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "ELECTRIC", "vehicle_type": "suv", "location": "Atlanta", "original_daily_rate_usd": 245.0}, {"vehicle_id": "CSV-000096", "make": "BMW", "model": "i8", "year": 2015, "rental_rate_per_day": 25415.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Fairburn", "original_daily_rate_usd": 299.0}, {"vehicle_id": "CSV-000097", "make": "Mercedes-Benz", "model": "E-Class", "year": 2017, "rental_rate_per_day": 8330.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Grayson", "original_daily_rate_usd": 98.0}, {"vehicle_id": "CSV-000098", "make": "Land Rover", "model": "Range Rover Sport", "year": 2018, "rental_rate_per_day": 11900.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Atlanta", "original_daily_rate_usd": 140.0}, {"vehicle_id": "CSV-000099", "make": "Chevrolet", "model": "Corvette", "year": 2016, "rental_rate_per_day": 17425.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Clarkston", "original_daily_rate_usd": 205.0}, {"vehicle_id": "CSV-000100", "make": "Ford", "model": "Fiesta", "year": 2017, "rental_rate_per_day": 2720.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 32.0}, {"vehicle_id": "CSV-000101", "make": "Mercedes-Benz", "model": "AMG GT", "year": 2016, "rental_rate_per_day": 25500.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 300.0}, {"vehicle_id": "CSV-000102", "make": "Volkswagen", "model": "Arteon", "year": 2019, "rental_rate_per_day": 8415.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 99.0}, {"vehicle_id": "CSV-000103", "make": "Ford", "model": "Fiesta", "year": 2015, "rental_rate_per_day": 2975.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 35.0}, {"vehicle_id": "CSV-000104", "make": "Maserati", "model": "Ghibli", "year": 2015, "rental_rate_per_day": 11475.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 135.0}, {"vehicle_id": "CSV-000105", "make": "BMW", "model": "X6", "year": 2018, "rental_rate_per_day": 12750.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Atlanta", "original_daily_rate_usd": 150.0}, {"vehicle_id": "CSV-000106", "make": "Mercedes-Benz", "model": "SLK-Class", "year": 2013, "rental_rate_per_day": 7650.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Smyrna", "original_daily_rate_usd": 90.0}, {"vehicle_id": "CSV-000107", "make": "Tesla", "model": "Model 3", "year": 2020, "rental_rate_per_day": 11730.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "ELECTRIC", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 138.0}, {"vehicle_id": "CSV-000108", "make": "Land Rover", "model": "Range Rover Velar", "year": 2019, "rental_rate_per_day": 12750.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Atlanta", "original_daily_rate_usd": 150.0}, {"vehicle_id": "CSV-000109", "make": "Bentley", "model": "Continental GT", "year": 2005, "rental_rate_per_day": 32725.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 385.0}, {"vehicle_id": "CSV-000110", "make": "Porsche", "model": "Panamera", "year": 2018, "rental_rate_per_day": 21250.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 250.0}, {"vehicle_id": "CSV-000111", "make": "Tesla", "model": "Model X", "year": 2016, "rental_rate_per_day": 12750.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "ELECTRIC", "vehicle_type": "suv", "location": "Atlanta", "original_daily_rate_usd": 150.0}, {"vehicle_id": "CSV-000112", "make": "Porsche", "model": "Cayenne", "year": 2017, "rental_rate_per_day": 17170.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "HYBRID", "vehicle_type": "suv", "location": "Snellville", "original_daily_rate_usd": 202.0}, {"vehicle_id": "CSV-000113", "make": "Porsche", "model": "718 Cayman", "year": 2017, "rental_rate_per_day": 11475.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Marietta", "original_daily_rate_usd": 135.0}, {"vehicle_id": "CSV-000114", "make": "Tesla", "model": "Model 3", "year": 2019, "rental_rate_per_day": 12835.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "ELECTRIC", "vehicle_type": "car", "location": "Alpharetta", "original_daily_rate_usd": 151.0}, {"vehicle_id": "CSV-000115", "make": "Porsche", "model": "Cayenne", "year": 2011, "rental_rate_per_day": 9350.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Atlanta", "original_daily_rate_usd": 110.0}, {"vehicle_id": "CSV-000116", "make": "Jaguar", "model": "F-TYPE", "year": 2016, "rental_rate_per_day": 25500.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Kennesaw", "original_daily_rate_usd": 300.0}, {"vehicle_id": "CSV-000117", "make": "Ford", "model": "Fiesta", "year": 2017, "rental_rate_per_day": 2720.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 32.0}, {"vehicle_id": "CSV-000118", "make": "Chevrolet", "model": "Camaro", "year": 2016, "rental_rate_per_day": 8075.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 95.0}, {"vehicle_id": "CSV-000119", "make": "Audi", "model": "TTS", "year": 2017, "rental_rate_per_day": 12750.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Snellville", "original_daily_rate_usd": 150.0}, {"vehicle_id": "CSV-000120", "make": "BMW", "model": "X4", "year": 2017, "rental_rate_per_day": 5100.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Kennesaw", "original_daily_rate_usd": 60.0}, {"vehicle_id": "CSV-000121", "make": "Dodge", "model": "Charger", "year": 2017, "rental_rate_per_day": 10965.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 129.0}, {"vehicle_id": "CSV-000122", "make": "Mercedes-Benz", "model": "C-Class", "year": 2016, "rental_rate_per_day": 6970.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Fairburn", "original_daily_rate_usd": 82.0}, {"vehicle_id": "CSV-000123", "make": "GMC", "model": "Yukon", "year": 2019, "rental_rate_per_day": 8925.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Atlanta", "original_daily_rate_usd": 105.0}, {"vehicle_id": "CSV-000124", "make": "Tesla", "model": "Model 3", "year": 2019, "rental_rate_per_day": 12495.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "ELECTRIC", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 147.0}, {"vehicle_id": "CSV-000125", "make": "Chevrolet", "model": "Suburban", "year": 2011, "rental_rate_per_day": 10370.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Atlanta", "original_daily_rate_usd": 122.0}, {"vehicle_id": "CSV-000126", "make": "Toyota", "model": "Corolla", "year": 2020, "rental_rate_per_day": 4165.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 49.0}, {"vehicle_id": "CSV-000127", "make": "Porsche", "model": "Boxster", "year": 2015, "rental_rate_per_day": 11815.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Peachtree City", "original_daily_rate_usd": 139.0}, {"vehicle_id": "CSV-000128", "make": "Tesla", "model": "Model 3", "year": 2019, "rental_rate_per_day": 12665.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "ELECTRIC", "vehicle_type": "car", "location": "Duluth", "original_daily_rate_usd": 149.0}, {"vehicle_id": "CSV-000129", "make": "Mitsubishi", "model": "Mirage", "year": 2014, "rental_rate_per_day": 3145.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 37.0}, {"vehicle_id": "CSV-000130", "make": "Chevrolet", "model": "Corvette", "year": 2017, "rental_rate_per_day": 15300.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Marietta", "original_daily_rate_usd": 180.0}, {"vehicle_id": "CSV-000131", "make": "Porsche", "model": "Panamera", "year": 2016, "rental_rate_per_day": 14025.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 165.0}, {"vehicle_id": "CSV-000132", "make": "Land Rover", "model": "Range Rover", "year": 2016, "rental_rate_per_day": 17935.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "DIESEL", "vehicle_type": "suv", "location": "Atlanta", "original_daily_rate_usd": 211.0}, {"vehicle_id": "CSV-000133", "make": "BMW", "model": "4 Series", "year": 2014, "rental_rate_per_day": 10200.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 120.0}, {"vehicle_id": "CSV-000134", "make": "Lexus", "model": "IS 200t", "year": 2016, "rental_rate_per_day": 8415.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 99.0}, {"vehicle_id": "CSV-000135", "make": "Chevrolet", "model": "Suburban", "year": 2012, "rental_rate_per_day": 10795.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Atlanta", "original_daily_rate_usd": 127.0}, {"vehicle_id": "CSV-000136", "make": "Nissan", "model": "Versa", "year": 2017, "rental_rate_per_day": 2720.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 32.0}, {"vehicle_id": "CSV-000137", "make": "Maserati", "model": "Ghibli", "year": 2017, "rental_rate_per_day": 17000.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Woodstock", "original_daily_rate_usd": 200.0}, {"vehicle_id": "CSV-000138", "make": "Jaguar", "model": "F-TYPE", "year": 2014, "rental_rate_per_day": 32810.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Mableton", "original_daily_rate_usd": 386.0}, {"vehicle_id": "CSV-000139", "make": "BMW", "model": "4 Series", "year": 2015, "rental_rate_per_day": 7990.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Bremen", "original_daily_rate_usd": 94.0}, {"vehicle_id": "CSV-000140", "make": "Dodge", "model": "Challenger", "year": 2019, "rental_rate_per_day": 7565.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 89.0}, {"vehicle_id": "CSV-000141", "make": "Audi", "model": "A7", "year": 2017, "rental_rate_per_day": 11645.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 137.0}, {"vehicle_id": "CSV-000142", "make": "Ford", "model": "Mustang", "year": 2014, "rental_rate_per_day": 8245.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Newnan", "original_daily_rate_usd": 97.0}, {"vehicle_id": "CSV-000143", "make": "Maserati", "model": "Ghibli", "year": 2017, "rental_rate_per_day": 13600.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Lithonia", "original_daily_rate_usd": 160.0}, {"vehicle_id": "CSV-000144", "make": "Audi", "model": "Q7", "year": 2015, "rental_rate_per_day": 9180.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "DIESEL", "vehicle_type": "suv", "location": "Douglasville", "original_daily_rate_usd": 108.0}, {"vehicle_id": "CSV-000145", "make": "Acura", "model": "MDX", "year": 2016, "rental_rate_per_day": 11475.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Douglasville", "original_daily_rate_usd": 135.0}, {"vehicle_id": "CSV-000146", "make": "Ford", "model": "Mustang", "year": 2018, "rental_rate_per_day": 10880.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Conyers", "original_daily_rate_usd": 128.0}, {"vehicle_id": "CSV-000147", "make": "Tesla", "model": "Model S", "year": 2015, "rental_rate_per_day": 14195.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "ELECTRIC", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 167.0}, {"vehicle_id": "CSV-000148", "make": "Hyundai", "model": "Accent", "year": 2017, "rental_rate_per_day": 3570.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Decatur", "original_daily_rate_usd": 42.0}, {"vehicle_id": "CSV-000149", "make": "Dodge", "model": "Challenger", "year": 2018, "rental_rate_per_day": 7225.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 85.0}, {"vehicle_id": "CSV-000150", "make": "Maserati", "model": "Ghibli", "year": 2015, "rental_rate_per_day": 11050.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 130.0}, {"vehicle_id": "CSV-000151", "make": "Tesla", "model": "Model S", "year": 2013, "rental_rate_per_day": 9775.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "ELECTRIC", "vehicle_type": "car", "location": "Peachtree City", "original_daily_rate_usd": 115.0}, {"vehicle_id": "CSV-000152", "make": "Kia", "model": "Rio", "year": 2020, "rental_rate_per_day": 2380.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 28.0}, {"vehicle_id": "CSV-000153", "make": "Nissan", "model": "Altima", "year": 2018, "rental_rate_per_day": 4080.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 48.0}, {"vehicle_id": "CSV-000154", "make": "Tesla", "model": "Model X", "year": 2017, "rental_rate_per_day": 29750.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "ELECTRIC", "vehicle_type": "suv", "location": "Mableton", "original_daily_rate_usd": 350.0}, {"vehicle_id": "CSV-000155", "make": "Mercedes-Benz", "model": "S-Class", "year": 2014, "rental_rate_per_day": 17000.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Woodstock", "original_daily_rate_usd": 200.0}, {"vehicle_id": "CSV-000156", "make": "Tesla", "model": "Model 3", "year": 2018, "rental_rate_per_day": 15215.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "ELECTRIC", "vehicle_type": "car", "location": "Decatur", "original_daily_rate_usd": 179.0}, {"vehicle_id": "CSV-000157", "make": "Volkswagen", "model": "Jetta", "year": 2011, "rental_rate_per_day": 4080.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 48.0}, {"vehicle_id": "CSV-000158", "make": "Volkswagen", "model": "New Beetle", "year": 2008, "rental_rate_per_day": 5440.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Decatur", "original_daily_rate_usd": 64.0}, {"vehicle_id": "CSV-000159", "make": "Porsche", "model": "Cayenne", "year": 2017, "rental_rate_per_day": 14620.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Atlanta", "original_daily_rate_usd": 172.0}, {"vehicle_id": "CSV-000160", "make": "Chevrolet", "model": "Silverado 1500", "year": 2017, "rental_rate_per_day": 12750.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "truck", "location": "Atlanta", "original_daily_rate_usd": 150.0}, {"vehicle_id": "CSV-000161", "make": "Tesla", "model": "Model 3", "year": 2020, "rental_rate_per_day": 12665.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "ELECTRIC", "vehicle_type": "car", "location": "Duluth", "original_daily_rate_usd": 149.0}, {"vehicle_id": "CSV-000162", "make": "Kia", "model": "Optima", "year": 2016, "rental_rate_per_day": 3740.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "HYBRID", "vehicle_type": "car", "location": "east point", "original_daily_rate_usd": 44.0}, {"vehicle_id": "CSV-000163", "make": "Porsche", "model": "Macan", "year": 2017, "rental_rate_per_day": 10200.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Atlanta", "original_daily_rate_usd": 120.0}, {"vehicle_id": "CSV-000164", "make": "Kia", "model": "Sorento", "year": 2014, "rental_rate_per_day": 3230.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Fairburn", "original_daily_rate_usd": 38.0}, {"vehicle_id": "CSV-000165", "make": "Jeep", "model": "Wrangler", "year": 2017, "rental_rate_per_day": 6970.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Stone Mountain", "original_daily_rate_usd": 82.0}, {"vehicle_id": "CSV-000166", "make": "GMC", "model": "Yukon XL", "year": 2019, "rental_rate_per_day": 9520.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Atlanta", "original_daily_rate_usd": 112.0}, {"vehicle_id": "CSV-000167", "make": "Porsche", "model": "Boxster", "year": 2015, "rental_rate_per_day": 12665.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Norcross", "original_daily_rate_usd": 149.0}, {"vehicle_id": "CSV-000168", "make": "Lexus", "model": "IS", "year": 2020, "rental_rate_per_day": 6800.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Smyrna", "original_daily_rate_usd": 80.0}, {"vehicle_id": "CSV-000169", "make": "Nissan", "model": "Versa Note", "year": 2015, "rental_rate_per_day": 3315.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 39.0}, {"vehicle_id": "CSV-000170", "make": "Mercedes-Benz", "model": "CLS-Class", "year": 2016, "rental_rate_per_day": 10200.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 120.0}, {"vehicle_id": "CSV-000171", "make": "Dodge", "model": "Charger", "year": 2020, "rental_rate_per_day": 7395.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 87.0}, {"vehicle_id": "CSV-000172", "make": "Kia", "model": "Soul", "year": 2014, "rental_rate_per_day": 2975.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Lithia Springs", "original_daily_rate_usd": 35.0}, {"vehicle_id": "CSV-000173", "make": "Volkswagen", "model": "Passat", "year": 2015, "rental_rate_per_day": 2975.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 35.0}, {"vehicle_id": "CSV-000174", "make": "Nissan", "model": "Altima", "year": 2016, "rental_rate_per_day": 4335.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 51.0}, {"vehicle_id": "CSV-000175", "make": "Hyundai", "model": "Elantra", "year": 2019, "rental_rate_per_day": 3400.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 40.0}, {"vehicle_id": "CSV-000176", "make": "Jeep", "model": "Grand Cherokee", "year": 2019, "rental_rate_per_day": 7565.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Atlanta", "original_daily_rate_usd": 89.0}, {"vehicle_id": "CSV-000177", "make": "MINI", "model": "Cooper", "year": 2015, "rental_rate_per_day": 6120.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Smyrna", "original_daily_rate_usd": 72.0}, {"vehicle_id": "CSV-000178", "make": "Jeep", "model": "Grand Cherokee", "year": 2017, "rental_rate_per_day": 7565.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Dunwoody", "original_daily_rate_usd": 89.0}, {"vehicle_id": "CSV-000179", "make": "Volkswagen", "model": "Passat", "year": 2012, "rental_rate_per_day": 3400.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 40.0}, {"vehicle_id": "CSV-000180", "make": "BMW", "model": "i8", "year": 2016, "rental_rate_per_day": 51000.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "HYBRID", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 600.0}, {"vehicle_id": "CSV-000181", "make": "Land Rover", "model": "Range Rover Velar", "year": 2018, "rental_rate_per_day": 16915.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Sandy Springs", "original_daily_rate_usd": 199.0}, {"vehicle_id": "CSV-000182", "make": "Tesla", "model": "Model 3", "year": 2020, "rental_rate_per_day": 22525.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "ELECTRIC", "vehicle_type": "car", "location": "Mableton", "original_daily_rate_usd": 265.0}, {"vehicle_id": "CSV-000183", "make": "Tesla", "model": "Model 3", "year": 2020, "rental_rate_per_day": 17000.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "ELECTRIC", "vehicle_type": "car", "location": "Dunwoody", "original_daily_rate_usd": 200.0}, {"vehicle_id": "CSV-000184", "make": "Tesla", "model": "Model S", "year": 2013, "rental_rate_per_day": 10200.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "ELECTRIC", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 120.0}, {"vehicle_id": "CSV-000185", "make": "Toyota", "model": "Prius", "year": 2010, "rental_rate_per_day": 3315.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "HYBRID", "vehicle_type": "car", "location": "East Point", "original_daily_rate_usd": 39.0}, {"vehicle_id": "CSV-000186", "make": "Mercedes-Benz", "model": "E-Class", "year": 2016, "rental_rate_per_day": 7225.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 85.0}, {"vehicle_id": "CSV-000187", "make": "BMW", "model": "X5", "year": 2009, "rental_rate_per_day": 4845.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Atlanta", "original_daily_rate_usd": 57.0}, {"vehicle_id": "CSV-000188", "make": "Jeep", "model": "Compass", "year": 2018, "rental_rate_per_day": 4845.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Atlanta", "original_daily_rate_usd": 57.0}, {"vehicle_id": "CSV-000189", "make": "Polaris", "model": "Slingshot", "year": 2017, "rental_rate_per_day": 19210.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Douglasville", "original_daily_rate_usd": 226.0}, {"vehicle_id": "CSV-000190", "make": "Chevrolet", "model": "Cruze", "year": 2017, "rental_rate_per_day": 3740.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Decatur", "original_daily_rate_usd": 44.0}, {"vehicle_id": "CSV-000191", "make": "Jeep", "model": "Wrangler Unlimited", "year": 2019, "rental_rate_per_day": 9520.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Atlanta", "original_daily_rate_usd": 112.0}, {"vehicle_id": "CSV-000192", "make": "Chevrolet", "model": "Camaro", "year": 2015, "rental_rate_per_day": 12580.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Sandy Springs", "original_daily_rate_usd": 148.0}, {"vehicle_id": "CSV-000193", "make": "Mercedes-Benz", "model": "E-Class", "year": 2014, "rental_rate_per_day": 13005.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 153.0}, {"vehicle_id": "CSV-000194", "make": "Chrysler", "model": "300", "year": 2018, "rental_rate_per_day": 6290.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Sugar Hill", "original_daily_rate_usd": 74.0}, {"vehicle_id": "CSV-000195", "make": "Maserati", "model": "Levante", "year": 2020, "rental_rate_per_day": 22865.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Sandy Springs", "original_daily_rate_usd": 269.0}, {"vehicle_id": "CSV-000196", "make": "Mercedes-Benz", "model": "E-Class", "year": 2012, "rental_rate_per_day": 10965.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 129.0}, {"vehicle_id": "CSV-000197", "make": "Jeep", "model": "Wrangler", "year": 2017, "rental_rate_per_day": 7140.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Atlanta", "original_daily_rate_usd": 84.0}, {"vehicle_id": "CSV-000198", "make": "Hyundai", "model": "Genesis", "year": 2014, "rental_rate_per_day": 4930.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Marietta", "original_daily_rate_usd": 58.0}, {"vehicle_id": "CSV-000199", "make": "BMW", "model": "X5", "year": 2015, "rental_rate_per_day": 12750.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "suv", "location": "Atlanta", "original_daily_rate_usd": 150.0}, {"vehicle_id": "CSV-000200", "make": "Nissan", "model": "Sentra", "year": 2017, "rental_rate_per_day": 2805.0, "status": "Available", "registration_number": "Dataset record", "fuel_type": "GASOLINE", "vehicle_type": "car", "location": "Atlanta", "original_daily_rate_usd": 33.0}];
+
+let currentUser=null;
+let allVehicles=[];
+function safe(value){return String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
+function money(value){const n=Number(value);return Number.isFinite(n)?'₹'+n.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2}):'N/A';}
+async function readResponse(res){const data=await res.json().catch(()=>({}));if(!res.ok)throw new Error(data.error||data.message||`Request failed (${res.status})`);return data;}
+
+async function handleLogin(e){
+ e.preventDefault();const errorDiv=document.getElementById('loginError');errorDiv.textContent='Signing in…';
+ try{
+  const res=await fetch(`${API_BASE}/auth/login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:document.getElementById('loginEmail').value.trim(),password:document.getElementById('loginPassword').value})});
+  const data=await readResponse(res);if(!data.user)throw new Error('Login response did not contain a user.');
+  currentUser=data.user;setupUserDashboard();errorDiv.textContent='';
+ }catch(err){errorDiv.textContent=`Login failed: ${err.message}. Check that app.js is running and the API URL is correct.`;}
+}
+function setupUserDashboard(){
+ document.getElementById('loginView').style.display='none';document.getElementById('dashboardView').style.display='block';
+ document.getElementById('welcomeTitle').textContent=`Hello, ${currentUser.username||'User'}`;
+ document.getElementById('roleBadge').textContent=`Role: ${currentUser.role||'User'}`;
+ const isAdmin=String(currentUser.role||'').toLowerCase()==='admin';document.getElementById('customerManagementTab').style.display=isAdmin?'':'none';
+ switchTab(null,'vehicles');fetchDamageReports();if(isAdmin)fetchCustomers();
+}
+function handleLogout(){currentUser=null;document.getElementById('dashboardView').style.display='none';document.getElementById('loginView').style.display='block';document.getElementById('loginForm').reset();document.getElementById('loginError').textContent='';}
+function switchTab(event,tabId){
+ document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.sidebar .tab-btn').forEach(b=>b.classList.remove('active'));
+ const section=document.getElementById(tabId);if(section)section.classList.add('active');
+ const btn=event?.currentTarget||document.querySelector(`.sidebar .tab-btn[onclick*="'${tabId}'"]`);if(btn)btn.classList.add('active');
+ if(tabId==='vehicles')fetchVehicles();if(tabId==='damage')fetchDamageReports();if(tabId==='customers'&&currentUser&&String(currentUser.role).toLowerCase()==='admin')fetchCustomers();
+}
+async function fetchVehicles(){
+ const grid=document.getElementById('vehicleGrid');
+ const count=document.getElementById('vehicleCountBadge');
+ if(!grid)return;
+ grid.innerHTML='<p class="empty">Loading vehicles…</p>';
+ try{
+  // Fetch the actual MySQL-backed vehicles so reliability scores and booking IDs are real.
+  const response=await fetch(`${API_BASE}/vehicles`);
+  const data=await readResponse(response);
+  if(!Array.isArray(data))throw new Error('Vehicles API did not return a list.');
+
+
+allVehicles = data.map((v, index) => ({
+    ...v,
+    vehicle_id: v.vehicle_id ?? index + 1,
+    display_id: v.license_plate ?? v.registration_number ?? v.vehicle_id ?? index + 1,
+    make: v.make ?? v['vehicle.make'] ?? '',
+    model: v.model ?? v['vehicle.model'] ?? '',
+    year: v.year ?? v['vehicle.year'] ?? '',
+    rental_rate_per_day: Number(
+        v.daily_rate ??
+        v.rental_rate_per_day ??
+        v.rate_daily ??
+        v['rate.daily'] ??
+        0
+    ),
+    reliability_score: Number(
+        v.reliability_score ?? v.reliabilityScore ?? 0
+    )
+}));
+
+filterVehicles();
+
+ }catch(err){
+  console.error('Vehicle loading error:',err);
+  grid.innerHTML=`<p class="error">Could not load vehicles: ${safe(err.message)}</p>`;
+  if(count)count.textContent='Vehicles unavailable';
+ }
+}
+
+function filterVehicles(){
+ const grid=document.getElementById('vehicleGrid');
+ const count=document.getElementById('vehicleCountBadge');
+ if(!grid||!count)return;
+ const query=(document.getElementById('vehicleSearch')?.value||'').trim().toLowerCase();
+ const matches=allVehicles.filter(v=>{
+  const searchable=[v.make,v.model,v.year,v.license_plate,v.registration_number,v.vehicle_id,v.vehicle_type,v.fuel_type,v.location]
+   .filter(value=>value!==null&&value!==undefined).join(' ').toLowerCase();
+  return searchable.includes(query);
+ });
+ count.textContent=query?`Showing ${matches.length} of ${allVehicles.length}`:`Total Vehicles: ${allVehicles.length}`;
+ if(!matches.length){
+  grid.innerHTML=`<p class="empty">${allVehicles.length?'No vehicles match “'+safe(query)+'”. Try another name or model.':'No available vehicles found.'}</p>`;
+  return;
+ }
+ grid.innerHTML=matches.map(v=>{
+  const rawScore=v.reliability_score;
+  const hasScore=rawScore!==null&&rawScore!==undefined&&rawScore!==''&&Number.isFinite(Number(rawScore));
+  const score=hasScore?Number(rawScore):null;
+  
+let category;
+
+if (score === null) {
+    category = 'Not assessed';
+} else if (score >= 90) {
+    category = 'Excellent';
+} else if (score >= 80) {
+    category = 'Good';
+} else if (score >= 70) {
+    category = 'Moderate';
+} else if (score >= 60) {
+    category = 'Low';
+} else {
+    category = 'Inspection Required';
+}
+
+  if(!category)category='Not assessed';
+  const scoreColor=score===null?'#94a3b8':score>=80?'#16a34a':score>=60?'#d97706':'#dc2626';
+  const rate=v.daily_rate??v.adjusted_rate_per_day??v.base_price??v.rental_rate_per_day;
+  const status=v.status||'Available';
+  const statusClass=String(status).toLowerCase()==='available'?'pill-green':String(status).toLowerCase().includes('maintenance')?'pill-red':'pill-amber';
+  const scoreText=score===null?'Not calculated':`${score.toFixed(1)}/100`;
+  const scoreWidth=score===null?0:Math.max(0,Math.min(100,score));
+  return `<article class="card"
+  role="button"
+  tabindex="0"
+  style="cursor:pointer"
+  onclick="showVehicleReliability(${Number(v.vehicle_id)})"
+  onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showVehicleReliability(${Number(v.vehicle_id)})}">
+   <h3>${safe(v.make||'')} ${safe(v.model||'')} (${safe(v.year??'N/A')})</h3>
+   <p><strong>Vehicle ID:</strong> ${safe(v.display_id||v.vehicle_id)}</p>
+   <div class="price">${rate!=null?money(rate):'Price unavailable'} <small>/ day</small></div>
+   <p><strong>Reliability score:</strong> ${scoreText}</p>
+   <div class="score-track" aria-label="Reliability score">
+    <div class="score-fill" style="width:${scoreWidth}%;background:${scoreColor}"></div>
+   </div>
+   <p><strong>Reliability:</strong> <span class="pill pill-gray">${safe(category)}</span></p>
+   <p><strong>Available quantity:</strong> ${safe(v.available_quantity??1)}</p>
+   <p><strong>Status:</strong> <span class="pill ${statusClass}">${safe(status)}</span></p>
+  </article>`;
+ }).join('');
+}
+
+
+async function showVehicleReliability(vehicleId) {
+  const panel = document.getElementById('vehicleReliabilityDetails');
+  const message = document.getElementById('vehicleReliabilityMessage');
+
+  panel.hidden = false;
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  document.getElementById('selectedVehicleTitle').textContent =
+    'Vehicle ' + vehicleId + ' Reliability Details';
+
+  document.getElementById('detailVehicleId').textContent = vehicleId;
+  document.getElementById('detailReliabilityScore').textContent = 'Loading…';
+  document.getElementById('detailDamagePenalty').textContent = 'Loading…';
+  document.getElementById('detailAgePenalty').textContent = 'Loading…';
+  document.getElementById('detailMaintenancePenalty').textContent = 'Loading…';
+  document.getElementById('detailLastCalculated').textContent = 'Loading…';
+  message.textContent = '';
+
+  try {
+    const response = await fetch(
+      `${API_BASE}/vehicles/${encodeURIComponent(vehicleId)}/reliability`
+    );
+
+    const data = await readResponse(response);
+    const record = Array.isArray(data) ? data[0] : data;
+
+    if (!record || record.reliability_score == null) {
+      throw new Error('No reliability record found for this vehicle.');
+    }
+
+    document.getElementById('detailReliabilityScore').textContent =
+      Number(record.reliability_score).toFixed(1);
+
+    document.getElementById('detailDamagePenalty').textContent =
+      record.damage_penalty != null
+        ? record.damage_penalty + ' points'
+        : 'Not provided by API';
+
+    document.getElementById('detailAgePenalty').textContent =
+      record.age_penalty != null
+        ? record.age_penalty + ' points'
+        : 'Not provided by API';
+
+    document.getElementById('detailMaintenancePenalty').textContent =
+      record.maintenance_penalty != null
+        ? record.maintenance_penalty + ' points'
+        : 'Not provided by API';
+
+    document.getElementById('detailLastCalculated').textContent =
+      record.last_calculated
+        ? new Date(record.last_calculated).toLocaleString()
+        : 'Not available';
+
+  } catch (error) {
+    message.textContent = error.message ||
+      'Unable to load reliability details.';
+  }
+}
+
+function closeVehicleReliability() {
+  document.getElementById('vehicleReliabilityDetails').hidden = true;
+}
+
+
+async function fetchDamageReports(){
+ const container=document.getElementById('damageTableContainer');if(!container)return;container.innerHTML='<p class="empty">Loading inspection records…</p>';
+ try{
+  const res=await fetch(`${API_BASE}/damage-reports`),data=await readResponse(res);if(!Array.isArray(data))throw new Error('Damage reports API did not return a list.');
+  if(!data.length){container.innerHTML='<p class="empty">No inspection or damage records reported.</p>';return;}
+  container.innerHTML=`<div class="table-wrap"><table><thead><tr><th>Report ID</th><th>Vehicle</th><th>Description</th><th>Severity</th><th>Repair estimate</th></tr></thead><tbody>${data.map(r=>{const s=String(r.severity||'').toLowerCase(),cls=s.includes('major')?'pill-red':s.includes('minor')?'pill-amber':'pill-gray';return `<tr><td>${safe(r.damage_id)}</td><td>${safe(r.make||'')} ${safe(r.model||'')}</td><td>${safe(r.damage_description)}</td><td><span class="pill ${cls}">${safe(r.severity)}</span></td><td>${money(r.repair_cost_estimate)}</td></tr>`;}).join('')}</tbody></table></div>`;
+ }catch(err){container.innerHTML=`<p class="error">Could not load damage reports: ${safe(err.message)}</p>`;console.error('Damage report loading error:',err);}
+}
+
+
+let selectedRentalRate = null;
+
+async function loadBookingVehicleRate() {
+    const vehicleId = document.getElementById('vehicleId').value.trim();
+    const totalCost = document.getElementById('totalCost');
+
+    selectedRentalRate = null;
+    totalCost.value = '';
+
+    if (!vehicleId) return;
+
+    try {
+        const response = await fetch(
+            `${API_BASE}/vehicles/${encodeURIComponent(vehicleId)}/pricing`
+        );
+
+        const data = await readResponse(response);
+
+        if (data.rentable === false) {
+            throw new Error(
+                data.message || 'This vehicle is not available for booking.'
+            );
+        }
+
+        const rate = Number(data.adjusted_price);
+
+        if (!Number.isFinite(rate) || rate < 0) {
+            throw new Error('A valid rental rate is unavailable.');
+        }
+
+        selectedRentalRate = rate;
+        calculateBookingTotal();
+    } catch (err) {
+        selectedRentalRate = null;
+        totalCost.value = '';
+
+        const message = document.getElementById('bookingMessage');
+        message.className = 'message error';
+        message.textContent = err.message;
+    }
+}
+
+function calculateBookingTotal() {
+    const start = document.getElementById('startDate').value;
+    const end = document.getElementById('endDate').value;
+    const totalCost = document.getElementById('totalCost');
+
+    if (
+        selectedRentalRate === null ||
+        !start ||
+        !end ||
+        end < start
+    ) {
+        totalCost.value = '';
+        return;
+    }
+
+    // Count both start and end dates as rental days.
+    const startTime = Date.parse(start + 'T00:00:00Z');
+    const endTime = Date.parse(end + 'T00:00:00Z');
+    const rentalDays = Math.floor(
+        (endTime - startTime) / 86400000
+    ) + 1;
+
+    totalCost.value = (
+        selectedRentalRate * rentalDays
+    ).toFixed(2);
+}
+
+document.getElementById('vehicleId').addEventListener(
+    'change',
+    loadBookingVehicleRate
+);
+
+document.getElementById('startDate').addEventListener(
+    'change',
+    calculateBookingTotal
+);
+
+document.getElementById('endDate').addEventListener(
+    'change',
+    calculateBookingTotal
+);
+
+
+
+let currentPaymentBookingId = null;
+let currentPaymentAmount = 0;
+
+async function createBooking(e) {
+    e.preventDefault();
+
+    const message = document.getElementById('bookingMessage');
+    const start = document.getElementById('startDate').value;
+    const end = document.getElementById('endDate').value;
+
+    if (end < start) {
+        message.className = 'message error';
+        message.textContent =
+            'End date must be on or after the start date.';
+        return;
+    }
+
+    const bookingData = {
+        customer_id: document.getElementById('customerId').value,
+        vehicle_id: document.getElementById('vehicleId').value,
+        start_date: start,
+        end_date: end
+    };
+
+    message.className = 'message';
+    message.textContent = 'Submitting booking…';
+
+    try {
+        const res = await fetch(`${API_BASE}/bookings`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(bookingData)
+        });
+
+        const data = await readResponse(res);
+
+        if (!data.booking_id) {
+            throw new Error('Booking was created without a booking ID.');
+        }
+
+        currentPaymentBookingId = data.booking_id;
+        currentPaymentAmount = Number(data.total_cost);
+
+        if (!Number.isFinite(currentPaymentAmount)) {
+            throw new Error('The server did not return a valid booking total.');
+        }
+
+        document.getElementById('paymentBookingId').textContent =
+            currentPaymentBookingId;
+
+        document.getElementById('paymentAmount').textContent =
+            currentPaymentAmount.toFixed(2);
+
+        document.getElementById('paymentMessage').textContent = '';
+        document.getElementById('paymentPanel').hidden = false;
+
+        message.className = 'message success';
+        message.textContent =
+            `Reservation created successfully. Booking ID: ${data.booking_id}`;
+
+        document.getElementById('bookingForm').reset();
+
+        // Reset the automatic booking-price calculation, if present.
+        if (typeof selectedRentalRate !== 'undefined') {
+            selectedRentalRate = null;
+        }
+
+        fetchVehicles();
+    } catch (err) {
+        message.className = 'message error';
+        message.textContent = `Booking failed: ${err.message}`;
+    }
+}
+
+
+
+let selectedPaymentMethod = null;
+
+function resetPaymentForms() {
+  document.getElementById('cardPaymentForm').reset();
+  document.getElementById('upiPaymentForm').reset();
+
+  document.getElementById('cardPaymentForm').hidden = true;
+  document.getElementById('upiPaymentForm').hidden = true;
+
+  document.getElementById('cardPayButton').disabled = false;
+  document.getElementById('upiPayButton').disabled = false;
+
+  selectedPaymentMethod = null;
+}
+
+function showPaymentMessage(message, type = '') {
+  const element = document.getElementById('paymentMessage');
+  element.textContent = message;
+  element.className = type;
+}
+
+document.querySelectorAll('[data-payment-method]').forEach(button => {
+  button.addEventListener('click', async () => {
+    resetPaymentForms();
+    showPaymentMessage('');
+
+    selectedPaymentMethod = button.dataset.paymentMethod;
+
+    if (selectedPaymentMethod === 'credit_card' ||
+        selectedPaymentMethod === 'debit_card') {
+      document.getElementById('cardFormTitle').textContent =
+        selectedPaymentMethod === 'credit_card'
+          ? 'Credit Card Details'
+          : 'Debit Card Details';
+
+      document.getElementById('cardPaymentForm').hidden = false;
+    } else if (selectedPaymentMethod === 'upi') {
+      document.getElementById('upiPaymentForm').hidden = false;
+    } else if (selectedPaymentMethod === 'cash') {
+      const confirmed = confirm(
+        'Cash payment of ₹' +
+        document.getElementById('paymentAmount').textContent +
+        ' will remain pending until vehicle pickup. Continue?'
+      );
+
+      if (confirmed) {
+        await submitDemoPayment('cash');
+      }
+    }
+  });
+});
+
+// Format card number
+document.getElementById('cardNumber').addEventListener('input', event => {
+  const digits = event.target.value.replace(/\D/g, '').slice(0, 16);
+  event.target.value = digits.replace(/(.{4})/g, '$1 ').trim();
+});
+
+// Format expiry date
+document.getElementById('cardExpiry').addEventListener('input', event => {
+  const digits = event.target.value.replace(/\D/g, '').slice(0, 4);
+
+  event.target.value = digits.length > 2
+    ? digits.slice(0, 2) + '/' + digits.slice(2)
+    : digits;
+});
+
+// Card payment form
+document.getElementById('cardPaymentForm').addEventListener('submit', async event => {
+  event.preventDefault();
+
+  const name = document.getElementById('cardholderName').value.trim();
+  const number = document.getElementById('cardNumber').value.replace(/\s/g, '');
+  const expiry = document.getElementById('cardExpiry').value;
+  const cvv = document.getElementById('cardCvv').value;
+
+  if (!name || !/^\d{13,19}$/.test(number) ||
+      !/^\d{2}\/\d{2}$/.test(expiry) || !/^\d{3,4}$/.test(cvv)) {
+    showPaymentMessage('Please enter valid card details.', 'error');
+    return;
+  }
+
+  const [month, year] = expiry.split('/').map(Number);
+  const now = new Date();
+
+  if (month < 1 || month > 12 ||
+      2000 + year < now.getFullYear() ||
+      (2000 + year === now.getFullYear() &&
+       month < now.getMonth() + 1)) {
+    showPaymentMessage('Please enter a valid, unexpired expiry date.', 'error');
+    return;
+  }
+
+  const method = selectedPaymentMethod;
+
+  // Demo only. Never send card details to your server.
+  event.target.reset();
+  await submitDemoPayment(method);
+});
+
+// UPI payment form
+document.getElementById('upiPaymentForm').addEventListener('submit', async event => {
+  event.preventDefault();
+
+  const app = document.getElementById('upiApp').value;
+  const upiId = document.getElementById('upiId').value.trim();
+
+  if (!app) {
+    showPaymentMessage('Please select a UPI app.', 'error');
+    return;
+  }
+
+  if (upiId && !/^[\w.\-]{2,256}@[a-zA-Z0-9.\-]{2,64}$/.test(upiId)) {
+    showPaymentMessage('Enter a valid UPI ID or leave it blank.', 'error');
+    return;
+  }
+
+  // Demo only. This does not open the app or transfer money.
+  event.target.reset();
+  showPaymentMessage('Processing demo payment using ' + app + '...');
+  await submitDemoPayment('upi');
+});
+
+async function submitDemoPayment(method) {
+  const bookingId = document.getElementById('paymentBookingId').textContent.trim();
+
+  if (!bookingId || bookingId === '—') {
+    showPaymentMessage('Please create a booking first.', 'error');
+    return;
+  }
+
+  const cardButton = document.getElementById('cardPayButton');
+  const upiButton = document.getElementById('upiPayButton');
+
+  cardButton.disabled = true;
+  upiButton.disabled = true;
+
+  try {
+    const response = await fetch(`${API_BASE}/payments/demo`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        booking_id: Number(bookingId),
+        payment_method: method
+      })
+    });
+
+    const data = await readResponse(response);
+
+    if (method === 'cash') {
+      showPaymentMessage(
+        'Cash payment pending. Please pay at vehicle pickup. Status: ' +
+        data.payment_status,
+        'success'
+      );
+    } else {
+      showPaymentMessage(
+        'Demo payment recorded. No money was charged or transferred. Status: ' +
+        data.payment_status,
+        'success'
+      );
+    }
+
+    resetPaymentForms();
+  } catch (error) {
+    showPaymentMessage(error.message || 'Payment failed. Please try again.', 'error');
+    cardButton.disabled = false;
+    upiButton.disabled = false;
+  }
+}
+
+document.getElementById('cancelCardPayment').addEventListener('click', () => {
+  resetPaymentForms();
+  showPaymentMessage('');
+});
+
+document.getElementById('cancelUpiPayment').addEventListener('click', () => {
+  resetPaymentForms();
+  showPaymentMessage('');
+});
+
+document.getElementById('closePaymentPanel').addEventListener('click', () => {
+  document.getElementById('paymentPanel').hidden = true;
+  resetPaymentForms();
+  showPaymentMessage('');
+});
+
+document.getElementById('closePaymentPanel')
+    .addEventListener('click', () => {
+        document.getElementById('paymentPanel').hidden = true;
+        currentPaymentBookingId = null;
+        currentPaymentAmount = 0;
+    });
+
+
+async function checkReliability(e){
+ if(e)e.preventDefault();const id=document.getElementById('checkVehicleId').value,result=document.getElementById('reliabilityResult');if(!id){result.innerHTML='<p class="error">Enter a vehicle ID.</p>';return;}
+ result.innerHTML='<p>Calculating reliability…</p>';
+ try{const res=await fetch(`${API_BASE}/vehicles/${encodeURIComponent(id)}/reliability`),data=await readResponse(res),record=Array.isArray(data)?data[0]:data;
+ if(!record||record.reliability_score==null){result.innerHTML='<p>No reliability record found for this vehicle.</p>';return;}
+ result.innerHTML=`<div class="summary-box"><h3>Vehicle ${safe(record.vehicle_id??id)}</h3><p><strong>Reliability score:</strong> ${safe(record.reliability_score)} / 100</p><p><strong>Last calculated:</strong> ${record.last_calculated?safe(new Date(record.last_calculated).toLocaleString()):'Not provided by API'}</p></div>`;
+ }catch(err){result.innerHTML=`<p class="error">Could not calculate reliability: ${safe(err.message)}</p>`;}
+}
+
+async function fetchCustomers(){
+ const tbody=document.getElementById('customerTableBody');if(!tbody)return;tbody.innerHTML='<tr><td colspan="6">Loading customers…</td></tr>';
+ try{const res=await fetch(`${API_BASE}/admin/customers`),data=await readResponse(res);if(!Array.isArray(data))throw new Error('Customers API did not return a list.');
+ if(!data.length){tbody.innerHTML='<tr><td colspan="6">No customers found.</td></tr>';return;}
+ tbody.innerHTML=data.map(c=>`<tr><td>${safe(c.customer_id)}</td><td>${safe(c.full_name)}</td><td>${safe(c.email||'Not available')}</td><td>${safe(c.phone)}</td><td>${safe(c.license_number)}</td><td><button class="small-btn" onclick="viewCustomerDetails(${Number(c.customer_id)})">View details</button></td></tr>`).join('');
+ }catch(err){tbody.innerHTML=`<tr><td colspan="6" class="error">Could not load customers: ${safe(err.message)}</td></tr>`;console.error('Customer loading error:',err);}
+}
+
+async function viewCustomerDetails(customerId){
+ const container=document.getElementById('customerDetails');container.innerHTML='<p>Loading customer details…</p>';
+ try{
+  const res=await fetch(`${API_BASE}/admin/customers/${encodeURIComponent(customerId)}/details`),data=await readResponse(res),c=data.customer||{};
+  const table=(items,headers,render)=>items&&items.length?`<div class="table-wrap"><table><thead><tr>${headers.map(h=>`<th>${safe(h)}</th>`).join('')}</tr></thead><tbody>${items.map(x=>`<tr>${render(x)}</tr>`).join('')}</tbody></table></div>`:'<p class="empty">No records found.</p>';
+  container.innerHTML=`<div class="summary-box"><h2>Customer: ${safe(c.full_name)}</h2><p><strong>ID:</strong> ${safe(c.customer_id)} &nbsp; <strong>Email:</strong> ${safe(c.email||'Not available')}</p><p><strong>Phone:</strong> ${safe(c.phone)} &nbsp; <strong>Licence:</strong> ${safe(c.license_number)}</p></div>
+  <h3>Booking history</h3>${table(data.bookings,['Booking ID','Vehicle','Start','End','Total','Status'],b=>`<td>${safe(b.booking_id)}</td><td>${safe(b.make)} ${safe(b.model)}</td><td>${safe(b.start_date)}</td><td>${safe(b.end_date)}</td><td>${money(b.total_cost)}</td><td>${safe(b.booking_status)}</td>`)}
+  <h3>Rental history</h3>${table(data.rentals,['Rental ID','Booking ID','Pickup','Return','Odometer start','Odometer end','Status'],r=>`<td>${safe(r.rental_id)}</td><td>${safe(r.booking_id)}</td><td>${safe(r.pickup_datetime)}</td><td>${safe(r.return_datetime||'Not returned')}</td><td>${safe(r.odometer_start)}</td><td>${safe(r.odometer_end??'—')}</td><td>${safe(r.rental_status)}</td>`)}
+  <h3>Payment history</h3>${table(data.payments,['Payment ID','Booking ID','Date','Amount','Method','Status'],p=>`<td>${safe(p.payment_id)}</td><td>${safe(p.booking_id)}</td><td>${safe(p.payment_date)}</td><td>${money(p.amount_paid)}</td><td>${safe(p.payment_method)}</td><td>${safe(p.payment_status)}</td>`)}`;
+  container.scrollIntoView({behavior:'smooth',block:'start'});
+ }catch(err){container.innerHTML=`<p class="error">Could not load customer details: ${safe(err.message)}</p>`;console.error('Customer details error:',err);}
+}
+</script>
+</body>
